@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <stdbool.h>
+#include <time.h>
 
 typedef struct date
 {
@@ -30,4 +31,6 @@ typedef enum month
 
 bool check_leap_year(int year);
 int days_in_month(int month, int year);
+bool validate_date(date_t date);
+bool compare_dates(date_t s_date, date_t e_date);
 #endif

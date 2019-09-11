@@ -46,3 +46,72 @@ int days_in_month(int month, int year)
                         return MAX_MONTH;
         }
 }
+
+bool validate_date(date_t date)
+{
+        time_t t = time(NULL);
+        struct tm date_time = *localtime(&t);
+
+        // Check if the year exceeds the current year.
+        if(date.year > (date_time.tm_year + 1900))
+        {
+                printf("\nYear can't be greater than current year.");
+                return false;
+        }
+
+        // Check if month exceeds the current year's month.
+        if( (date.year == (date_time.tm_year + 1900)) &&
+            (date.month > (date_time.tm_mon + 1)))
+        {
+                printf("\nDate exceeded the current date");
+                return false;
+        }
+
+        // Check if day exceeds the current date.
+        if( (date.year == (date_time.tm_year + 1900)) &&
+            (date.month == (date_time.tm_mon + 1)) &&
+            (date.day > date_time.tm_mday) )
+        {
+                printf("\nDate exceeded the current date");
+                return false;
+        }
+
+        // Month should be between 1-12.
+        if( (date.month < JAN) || (date.month > DEC) )
+        {
+                printf("\nMonth value is incorrect.");
+                return false;
+        }
+
+	// Date should be between 1-31.
+	if( (date.day < 0) || (date.day > days_in_month(date.month, date.year)) )
+        {
+                printf("\nDate value is incorrect.");
+                return false;
+        }
+
+        return true;
+}
+
+bool compare_dates(date_t s_date, date_t e_date)
+{
+	bool valid = true;
+
+	if(s_date.year > e_date.year)
+	{
+		valid = false;
+	}
+	else if(s_date.month > e_date.month)
+	{
+		valid = false;
+	}
+	else if(s_date.day > e_date.day)
+	{
+		valid = false;
+	}
+	
+	if(!valid)
+		printf("\nStart date cannot be greater than end date. Please try again.");
+
+	return valid;
+}
