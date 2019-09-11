@@ -7,7 +7,11 @@ date_t e_date;	// End date.
 // Main function.
 int main()
 {
+	// Get the date from user, validate it and compare start and end date.
 	get_date();
+
+	// Get log file names in a log_file_names.txt file.
+	get_log_file_names();
 
 	return 0;
 }

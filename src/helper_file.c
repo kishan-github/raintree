@@ -115,3 +115,23 @@ bool compare_dates(date_t s_date, date_t e_date)
 
 	return valid;
 }
+
+// Create the command to get the file names and store them in "log_file_names.txt" file.
+void get_log_file_names()
+{
+	char cmd[100] = "";
+	int exit_status = 0;
+
+	// Create the command.
+	strcpy(cmd, "ls ");
+	strcat(cmd, LOG_FILE);
+	strcat(cmd, " -1 > log_file_names.txt");
+
+	// Execute the command.
+	exit_status = system(cmd);
+
+	if(exit_status == -1)
+	{
+		printf("\nSystem command (%s) failed.");
+	}
+}
