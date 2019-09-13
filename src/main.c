@@ -1,5 +1,4 @@
 #include <main.h>
-#include <helper_file.h>
 
 date_t s_date;	// Start date.
 date_t e_date;	// End date.
@@ -77,7 +76,7 @@ void get_date_from_user(int check)
 }
 
 // Check content of each file.
-void check_log_file()
+status_t check_log_file()
 {
 	FILE *fptr = NULL;
 	char f_name[100];
@@ -86,6 +85,7 @@ void check_log_file()
 	if(!fptr)
 	{
 		printf("\nUnable to open file.");
+		return FAILURE;
 	}
 
 	while(fscanf(fptr,"%s", f_name) == 1)
@@ -95,10 +95,11 @@ void check_log_file()
 	}
 
 	fclose(fptr);
+	return SUCCESS;
 }
 
 // Check data of log file f_name.
-void check_log_file_data(char *f_name)
+status_t check_log_file_data(char *f_name)
 {
 	FILE *fptr = NULL;
 	char buff[1000] = "";
@@ -108,6 +109,7 @@ void check_log_file_data(char *f_name)
 	if(!fptr)
 	{
 		printf("\nUnable to open file - %s.", f_name);
+		return FAILURE;
 	}
 
 	while(fgets(buff, sizeof(buff), fptr) != NULL)
@@ -122,33 +124,46 @@ void check_log_file_data(char *f_name)
 		add_to_list(c_name);
 	}
 	fclose(fptr);
+	return SUCCESS;
 }
 
 // Check if the date in the logs is in the range of user start and end date.
 bool is_date_in_range(char *buff)
 {
-	int day = 0;
-	int month = 0;
+	date_t log_date;
 
-	find_pattern(buff, &day, &month);
-
-	if( (month < s_date.month) || (month > e_date.month))
+	memset(&log_date, 0, sizeof(log_date));
+	if(get_date_from_log(buff, &log_date) == FAILURE)
 		return false;
 
-	if( (day < s_date.day) || (day > e_date.day))
+	if( (log_date.month < s_date.month) || (log_date.month > e_date.month))
+		return false;
+
+	if( (log_date.day < s_date.day) || (log_date.day > e_date.day))
 		return false;
 
 	return true;
 }
 
 // Extract the date from the log data.
-void find_pattern(char *buff, int *day, int *month)
+status_t get_date_from_log(char *buff, date_t *log_date)
 {
 	buff = strstr(buff, DELIMITER_LOG);
+	if(!buff)
+		return FAILURE;
+
 	buff = strstr(buff, DELIMITER_START_DATE);
+	if(!buff)
+		return FAILURE;
+
 	buff++;
-	*month = atoi(strtok(buff, DELIMITER_MONTH_DATE));
-	*day = atoi(strtok(NULL,DELIMITER_SPACE));
+	if(!buff)
+		return FAILURE;
+
+	log_date->month = atoi(strtok(buff, DELIMITER_MONTH_DATE));
+	log_date->day = atoi(strtok(NULL,DELIMITER_SPACE));
+
+	return SUCCESS;
 }
 
 // Extract the computer name from the log data.
@@ -165,7 +180,7 @@ void get_computer_name(char *buff, char *c_name)
 }
 
 // Add the c_name computer to the list.
-void add_to_list(char *c_name)
+status_t add_to_list(char *c_name)
 {
 	log_details_t *data = NULL;
 	log_details_t *ptr = NULL;
@@ -179,17 +194,25 @@ void add_to_list(char *c_name)
 	{
 		ptr = malloc(sizeof(log_details_t));
 		if(ptr == NULL)
+		{
 			printf("\nMemory allocation failed.");
+			return FAILURE;
+		}
 
 		ptr->name = malloc(sizeof(char) * strlen(c_name));
 		if(ptr->name == NULL)
+		{
 			printf("\nMmeory allocation failed.");
+			free(ptr);
+			return FAILURE;
+		}
 
 		strcpy(ptr->name, c_name);
 		ptr->no_of_disconnect = 1;
 		ptr->next = log_data;
 		log_data = ptr;
 	}
+	return SUCCESS;
 }
 
 // Get the node address if computer name (c_name) is already available in the list.

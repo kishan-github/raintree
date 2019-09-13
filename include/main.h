@@ -5,6 +5,7 @@
 #include <stdbool.h>
 #include <string.h>
 #include <stdlib.h>
+#include <helper_file.h>
 
 #define START_DATE 1
 #define END_DATE 2
@@ -24,12 +25,12 @@ typedef struct log_details
 
 void get_date();
 void get_date_from_user(int check);
-void check_log_file();
-void check_log_file_data(char *f_name);
+status_t check_log_file();
+status_t check_log_file_data(char *f_name);
 bool is_date_in_range(char *buff);
-void find_pattern(char *buff, int *day, int *month);
+status_t get_date_from_log(char *buff, date_t *log_date);
 void get_computer_name(char *buff, char *c_name);
-void add_to_list(char *c_name);
+status_t add_to_list(char *c_name);
 log_details_t* get_computer_handle(char *c_name);
 void print_computer_names();
 #endif

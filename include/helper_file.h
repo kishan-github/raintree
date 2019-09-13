@@ -33,6 +33,12 @@ typedef enum month
         MAX_MONTH
 }month_t;
 
+typedef enum status
+{
+	SUCCESS,
+	FAILURE
+}status_t;
+
 bool check_leap_year(int year);
 int days_in_month(int month, int year);
 bool validate_date(date_t date);
