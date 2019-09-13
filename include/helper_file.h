@@ -7,7 +7,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-#define LOG_FILE "../log_files"
+#define LOG_FILE "../log_files/"
 
 typedef struct date
 {
@@ -38,4 +38,5 @@ int days_in_month(int month, int year);
 bool validate_date(date_t date);
 bool compare_dates(date_t s_date, date_t e_date);
 void get_log_file_names();
+void create_file_name(char *f_name);
 #endif

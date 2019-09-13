@@ -132,6 +132,15 @@ void get_log_file_names()
 
 	if(exit_status == -1)
 	{
-		printf("\nSystem command (%s) failed.");
+		printf("\nSystem command (%s) failed.", cmd);
 	}
+}
+
+void create_file_name(char *f_name)
+{
+	char f_name_temp[100] = "";
+
+	strcpy(f_name_temp, LOG_FILE);
+	strcat(f_name_temp, f_name);
+	strcpy(f_name, f_name_temp);
 }
