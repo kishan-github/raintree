@@ -10,6 +10,9 @@
 #define START_DATE 1
 #define END_DATE 2
 #define CHECK_TEXT "Client is disconnected from agent"
+#define MAX_FNAME_LENGTH 100
+#define MAX_BUFFER_LENGTH 1000
+#define MAX_CNAME_LENGTH 50
 
 typedef struct log_details
 {

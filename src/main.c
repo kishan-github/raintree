@@ -86,7 +86,7 @@ void get_date_from_user(int check)
 status_t check_log_file()
 {
 	FILE *fptr = NULL;
-	char f_name[100];
+	char f_name[MAX_FNAME_LENGTH];
 
 	// Open the log_file_names.txt file which contain the names of all log files.
 	fptr = fopen(LOG_FILE_NAME, "r");
@@ -114,8 +114,8 @@ status_t check_log_file()
 status_t check_log_file_data(char *f_name)
 {
 	FILE *fptr = NULL;
-	char buff[1000] = "";
-	char c_name[50] = "";
+	char buff[MAX_BUFFER_LENGTH] = "";
+	char c_name[MAX_CNAME_LENGTH] = "";
 
 	// Open the f_name log file.
 	fptr = fopen(f_name, "r");
