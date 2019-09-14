@@ -133,7 +133,8 @@ status_t check_log_file_data(char *f_name)
 			continue;
 
 		// Extract the computer name from the log.
-		get_computer_name(buff, c_name);
+		if(get_computer_name(buff, c_name) == FAILURE)
+			continue;
 
 		// Add the computer name to the linked list.
 		add_to_list(c_name);
@@ -168,11 +169,57 @@ bool is_date_in_range(char *buff)
 // Extract the date from the log data.
 status_t get_date_from_log(char *buff, date_t *log_date)
 {
+	char *token = NULL;
+
+	// Look for the '|' character in log as date is given between starting and ending '|'
 	buff = strstr(buff, DELIMITER_LOG);
 	if(!buff)
 		return FAILURE;
 
+	// Look for '(' in log which is the starting point of date.
 	buff = strstr(buff, DELIMITER_START_DATE);
+	if(!buff)
+		return FAILURE;
+
+	// Increment by 1 to skip the '(' character.
+	buff++;
+	if(!buff)
+		return FAILURE;
+
+	// (MONTH/DAY) : Get month.
+	token = strtok(buff, DELIMITER_MONTH_DATE);
+	if(!token)
+		return FAILURE;
+
+	log_date->month = atoi(token);
+
+	// (MONTH/DAY) : Get day.
+	token = strtok(NULL, DELIMITER_SPACE);
+	if(!token)
+		return FAILURE;
+
+	log_date->day = atoi(token);
+
+	return SUCCESS;
+}
+
+// Extract the computer name from the log data.
+status_t get_computer_name(char *buff, char *c_name)
+{
+	int idx = 0;
+
+	buff = strstr(buff, COMPUTER_NAME);
+	if(!buff)
+		return FAILURE;
+
+	while(buff[idx] != ':')
+	{
+		buff++;
+		if(!buff)
+			return FAILURE;
+	}
+
+	buff = strtok(buff, DELIMITER_SPACE);
 	if(!buff)
 		return FAILURE;
 
@@ -180,23 +227,8 @@ status_t get_date_from_log(char *buff, date_t *log_date)
 	if(!buff)
 		return FAILURE;
 
-	log_date->month = atoi(strtok(buff, DELIMITER_MONTH_DATE));
-	log_date->day = atoi(strtok(NULL,DELIMITER_SPACE));
-
-	return SUCCESS;
-}
-
-// Extract the computer name from the log data.
-void get_computer_name(char *buff, char *c_name)
-{
-	//int idx = 0;
-
-	buff = strstr(buff, COMPUTER_NAME);
-	/*while(buff[idx++] != ':')
-		buff++;*/
-	buff += 13;
-	buff = strtok(buff, DELIMITER_SPACE);
 	strcpy(c_name, buff);
+	return SUCCESS;
 }
 
 // Add the c_name computer to the list.

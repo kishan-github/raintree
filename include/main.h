@@ -29,7 +29,7 @@ status_t check_log_file();
 status_t check_log_file_data(char *f_name);
 bool is_date_in_range(char *buff);
 status_t get_date_from_log(char *buff, date_t *log_date);
-void get_computer_name(char *buff, char *c_name);
+status_t get_computer_name(char *buff, char *c_name);
 status_t add_to_list(char *c_name);
 log_details_t* get_computer_handle(char *c_name);
 void print_computer_names();
