@@ -33,4 +33,6 @@ void get_computer_name(char *buff, char *c_name);
 status_t add_to_list(char *c_name);
 log_details_t* get_computer_handle(char *c_name);
 void print_computer_names();
+status_t arrange_list();
+status_t swap_items(log_details_t **ptr, log_details_t **ptr_next);
 #endif
