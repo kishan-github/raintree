@@ -11,7 +11,11 @@ int main()
 	get_date();
 
 	// Get log file names in a log_file_names.txt file.
-	get_log_file_names();
+	if(get_log_file_names() == FAILURE)
+	{
+		printf("\nSomething went wrong. Aborting the process.");
+		return 0;
+	}
 
 	// Check the content of each log file.
 	check_log_file();
@@ -85,7 +89,7 @@ status_t check_log_file()
 	char f_name[100];
 
 	// Open the log_file_names.txt file which contain the names of all log files.
-	fptr = fopen("log_file_names.txt", "r");
+	fptr = fopen(LOG_FILE_NAME, "r");
 	if(!fptr)
 	{
 		printf("\nUnable to open file.");
@@ -144,91 +148,25 @@ status_t check_log_file_data(char *f_name)
 	return SUCCESS;
 }
 
-// Check if the date in the logs is in the range of user start and end date.
 bool is_date_in_range(char *buff)
 {
-	date_t log_date;
+        date_t log_date;
 
-	memset(&log_date, 0, sizeof(log_date));
+        memset(&log_date, 0, sizeof(log_date));
 
-	// Extract date from the log.
-	if(get_date_from_log(buff, &log_date) == FAILURE)
-		return false;
+        // Extract date from the log.
+        if(get_date_from_log(buff, &log_date) == FAILURE)
+                return false;
 
-	// Check if the month of the date of log is in range or not.
-	if( (log_date.month < s_date.month) || (log_date.month > e_date.month))
-		return false;
+        // Check if the month of the date of log is in range or not.
+        if( (log_date.month < s_date.month) || (log_date.month > e_date.month))
+                return false;
 
-	// Check if the day of the date of log is in range or not.
-	if( (log_date.day < s_date.day) || (log_date.day > e_date.day))
-		return false;
+        // Check if the day of the date of log is in range or not.
+        if( (log_date.day < s_date.day) || (log_date.day > e_date.day))
+                return false;
 
-	return true;
-}
-
-// Extract the date from the log data.
-status_t get_date_from_log(char *buff, date_t *log_date)
-{
-	char *token = NULL;
-
-	// Look for the '|' character in log as date is given between starting and ending '|'
-	buff = strstr(buff, DELIMITER_LOG);
-	if(!buff)
-		return FAILURE;
-
-	// Look for '(' in log which is the starting point of date.
-	buff = strstr(buff, DELIMITER_START_DATE);
-	if(!buff)
-		return FAILURE;
-
-	// Increment by 1 to skip the '(' character.
-	buff++;
-	if(!buff)
-		return FAILURE;
-
-	// (MONTH/DAY) : Get month.
-	token = strtok(buff, DELIMITER_MONTH_DATE);
-	if(!token)
-		return FAILURE;
-
-	log_date->month = atoi(token);
-
-	// (MONTH/DAY) : Get day.
-	token = strtok(NULL, DELIMITER_SPACE);
-	if(!token)
-		return FAILURE;
-
-	log_date->day = atoi(token);
-
-	return SUCCESS;
-}
-
-// Extract the computer name from the log data.
-status_t get_computer_name(char *buff, char *c_name)
-{
-	int idx = 0;
-
-	buff = strstr(buff, COMPUTER_NAME);
-	if(!buff)
-		return FAILURE;
-
-	while(buff[idx] != ':')
-	{
-		buff++;
-		if(!buff)
-			return FAILURE;
-	}
-
-	buff = strtok(buff, DELIMITER_SPACE);
-	if(!buff)
-		return FAILURE;
-
-	buff++;
-	if(!buff)
-		return FAILURE;
-
-	strcpy(c_name, buff);
-	return SUCCESS;
+        return true;
 }
 
 // Add the c_name computer to the list.
